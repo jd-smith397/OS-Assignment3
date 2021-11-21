@@ -1,30 +1,38 @@
-# Author:
+# Author: Jessie Smith
 # Created:
 #
-# Description:
+# Description: Provides simulator with a class for handling the page reference string
 #
 import random as rand
-DEFAULT_SEED = 42
+DEFAULT_SEED = 42   
 
-class PageRefString:
+class PageRefStr:
     ref_str = []
 
     # Constructor
-    def __init__(self, seed = DEFAULT_SEED, size = 100, end_num = 49, str_size = 100):
+    def __init__(self, seed = DEFAULT_SEED, end_num = 49, size = 100):
         rand.seed(seed)             # Seeds the rng with either the default or user defined value
         self.current_index = 0      # Current index in the reference string
-        self.size = size            #
-        self.start_num = 0          # Holds the value of the start address of the page numberspace
-        self.end_num = end_num      #
-        self.str_size = str_size    #
+        self.start_num = 0          # Value of the start number of the page numberspace
+        self.end_num = end_num      # Value of the end number of the page numberspace
+        self.size = size            # Size of the reference string
+
+        self.__load_str()            #Loads the reference string with random variables
     
     # Reset ref_str with completely new values
     def reload_str(self):
         self.ref_str = []
-        self._load_str()
+        self.__load_str()
+
+    # Utility method for use in the Optimal algorithm
+    def find_distance(self, page_number: int):
+        for i in range(self.current_index+1, self.size):
+            if page_number == self.ref_str[i]:
+                return i+1                      # Returns the distance if found
+        return 0                                # Returns 0 indicating page number not found
 
     # Private support method meant to load ref_str assuming it's referencing an empty list
-    def _load_str(self):
+    def __load_str(self):
         for i in range(self.size):
             temp = rand.randint(0, 49)
             self.ref_str.append(temp)
