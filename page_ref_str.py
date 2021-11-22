@@ -4,13 +4,14 @@
 # Description: Provides simulator with a class for handling the page reference string
 #
 import random as rand
-DEFAULT_SEED = 42   
+DEFAULT_SEED = 42
+DEFAULT_STR_SIZE = 100   
 
 class PageRefStr:
     ref_str = []
 
     # Constructor
-    def __init__(self, seed = DEFAULT_SEED, end_num = 49, size = 100):
+    def __init__(self, seed = DEFAULT_SEED, end_num = 49, size = DEFAULT_STR_SIZE):
         rand.seed(seed)             # Seeds the rng with either the default or user defined value
         self.current_index = 0      # Current index in the reference string
         self.start_num = 0          # Value of the start number of the page numberspace
