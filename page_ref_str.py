@@ -20,9 +20,16 @@ class PageRefStr:
 
         self.__load_str()            #Loads the reference string with random variables
     
+    #String representation of the page reference string for debugging
+    def __repr__(self):
+        temp = self.ref_str.copy()
+        temp[self.current_index] = f'***{temp[self.current_index]}***'
+        return f'Page Reference String at index [{self.current_index}]:\n{temp}'
+
     # Reset ref_str with completely new values
     def reload_str(self):
         self.ref_str = []
+        self. current_index = 0
         self.__load_str()
 
     # Utility method for use in the Optimal algorithm
