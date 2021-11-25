@@ -38,7 +38,7 @@ class Simulator:
     #Constructor
     def __init__(self, num_frames: int, replacement_alg: int, rand_seed = page_ref_str.DEFAULT_SEED, debug = False):
         if replacement_alg == 1:
-            self.replacement_alg = "FCFS"
+            self.replacement_alg = "FIFO"
         elif replacement_alg == 2:
             self.replacement_alg = "LRU"
         elif replacement_alg == 3:
@@ -47,20 +47,21 @@ class Simulator:
             raise ValueError("Replacement algorithm represented by ", replacement_alg ," not implemented.")
 
         #Creating dictionary of replacement algorithms
-        self.replace = {"FCFS": self.__fcfs_replace, "LRU": self.__lru_replace, "OPT": self.__opt_replace}
+        self.replace = {"FIFO": self.__fifo_replace, "LRU": self.__lru_replace, "OPT": self.__opt_replace}
 
         self.num_frames = num_frames                                # Number of frames in physical memory
         self.ft = FrameTable(self.num_frames)                       # Frame table of physical memory
         self.prs = page_ref_str.PageRefStr(seed = rand_seed)        # Page reference string
         self.page_faults = 0                                        # Number of page faults initialized to 0
-        self.next_fcfs_repl = 0                                     # Next frame to be replaced in fcfs
+        self.next_fifo_repl = 0                                     # Next frame to be replaced in fifo
         self.clock = 0                                              # Time, for purposes of lru
         self.lru_table = {}                                         # Table of when each page number was last used
         self.debug = debug                                          # If true, the state of the system will be logged    
         
-        log.basicConfig(filename=f'{self.replacement_alg}_{self.num_frames}_debug.log',  
-            level=log.INFO, filemode='w', 
-            format='%(levelname)s -\n%(message)s\n-------------------\n')     # Setup for logging
+        if self.debug:
+            log.basicConfig(filename=f'{self.replacement_alg}_{self.num_frames}_debug.log',  
+                level=log.INFO, filemode='w', 
+                format='%(levelname)s -\n%(message)s\n-------------------\n')     # Setup for logging
         
     def run(self):
 
@@ -102,11 +103,16 @@ class Simulator:
 
             self.clock += 1
             self.prs.current_index += 1
+        return self.page_faults
 
-    # Method for handling fcfs replacement
-    def __fcfs_replace(self):
-        self.ft.frames[self.next_fcfs_repl].page = self.prs.ref_str[self.prs.current_index]
-        self.next_fcfs_repl = (self.next_fcfs_repl + 1) % self.num_frames
+    def print_report(self):
+        print(f'{self.replacement_alg}:{self.num_frames}\n------\n{repr(self.prs)}\n{repr(self.ft)}\nPage Faults: {self.page_faults}')
+        print('--------------------------------------------\n')
+
+    # Method for handling fifo replacement
+    def __fifo_replace(self):
+        self.ft.frames[self.next_fifo_repl].page = self.prs.ref_str[self.prs.current_index]
+        self.next_fifo_repl = (self.next_fifo_repl + 1) % self.num_frames
         self.page_faults += 1
     
     # Method for handling lru replacement
@@ -155,5 +161,3 @@ class Simulator:
             message += f'\nLRU Table: {self.lru_table}'
         log.info(message)
 
-sim = Simulator(5, 3, debug = True)
-sim.run()

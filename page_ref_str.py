@@ -23,6 +23,8 @@ class PageRefStr:
     #String representation of the page reference string for debugging
     def __repr__(self):
         temp = self.ref_str.copy()
+        if self.current_index >= self.size:
+            return f'Page Reference String:\n{temp}'
         temp[self.current_index] = f'***{temp[self.current_index]}***'
         return f'Page Reference String at index [{self.current_index}]:\n{temp}'
 
