@@ -1,11 +1,10 @@
 import page_ref_str
 import logging as log
-from dataclasses import dataclass
 
-@dataclass
 class Frame:
-    page: int
-    valid: bool
+    def __init__(self, page: int, valid: bool):
+        self.page = page
+        self.valid = valid
 
 class FrameTable:
     frames = []
